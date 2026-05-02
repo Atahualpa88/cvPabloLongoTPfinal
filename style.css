@@ -1,11 +1,11 @@
 :root {
-  --celeste: #74c0fc;
-  --celeste-oscuro: #2b8fd6;
-  --blanco: #ffffff;
-  --azul-tinta: #0d2b45;
-  --oro: #f6c33b;
-  --verde-ok: #1f9d55;
-  --rojo-error: #e63946;
+  --bg: #0a1022;
+  --card: #141c36;
+  --card-2: #10172d;
+  --text: #e8edff;
+  --muted: #9eb0df;
+  --accent: #6a8bff;
+  --accent-2: #14d9c4;
 }
 
 * {
@@ -16,150 +16,124 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: 'Montserrat', sans-serif;
-  color: var(--azul-tinta);
   background:
-    linear-gradient(180deg, rgba(116, 192, 252, 0.25), rgba(255, 255, 255, 0.95)),
-    radial-gradient(circle at top right, rgba(246, 195, 59, 0.35), transparent 45%),
-    linear-gradient(180deg, #d7efff, #ffffff);
-  display: grid;
-  place-items: center;
+    radial-gradient(circle at 10% 10%, rgba(106, 139, 255, 0.22), transparent 35%),
+    radial-gradient(circle at 90% 20%, rgba(20, 217, 196, 0.16), transparent 30%),
+    var(--bg);
+  color: var(--text);
   padding: 24px;
 }
 
 .app {
-  width: min(760px, 100%);
+  width: min(880px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 16px;
 }
 
 .hero {
   text-align: center;
-  margin-bottom: 18px;
 }
 
 .badge {
   display: inline-block;
-  margin: 0 0 8px;
-  padding: 6px 14px;
+  padding: 7px 14px;
   border-radius: 999px;
-  background: var(--blanco);
-  border: 2px solid var(--celeste-oscuro);
+  background: rgba(255, 74, 74, 0.2);
+  border: 1px solid rgba(255, 114, 114, 0.6);
   font-weight: 700;
 }
 
 h1 {
-  margin: 0;
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(2rem, 4vw, 2.8rem);
+  margin: 12px 0 8px;
+  font-size: clamp(2rem, 5vw, 3rem);
 }
 
 .subtitle {
-  margin: 10px auto 0;
+  margin: 0 auto;
   max-width: 62ch;
-  line-height: 1.45;
+  color: var(--muted);
 }
 
 .card {
-  background: var(--blanco);
-  border: 3px solid var(--celeste);
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(13, 43, 69, 0.12);
+  background: linear-gradient(180deg, var(--card), var(--card-2));
+  border: 1px solid rgba(158, 176, 223, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
 }
 
-.status-row {
+.live-row {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  font-weight: 600;
-}
-
-#question {
-  margin: 16px 0;
-  font-size: clamp(1.2rem, 2.3vw, 1.6rem);
-}
-
-.answers {
-  display: grid;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
-.answer-btn {
+.live, .listeners {
+  margin: 0;
+  color: var(--muted);
+}
+
+#track-title {
+  margin: 14px 0 6px;
+}
+
+.track-meta {
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+
+.progress-wrap {
   width: 100%;
-  text-align: left;
-  border: 2px solid #c7e7ff;
-  border-radius: 12px;
-  padding: 12px;
-  font-size: 1rem;
-  background: #f7fcff;
-  cursor: pointer;
-  transition: transform 0.12s ease, border-color 0.12s ease;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
 }
 
-.answer-btn:hover:enabled {
-  transform: translateY(-1px);
-  border-color: var(--celeste-oscuro);
+.progress-bar {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 0.4s linear;
 }
 
-.answer-btn.correct {
-  border-color: var(--verde-ok);
-  background: #ebfff4;
-}
-
-.answer-btn.wrong {
-  border-color: var(--rojo-error);
-  background: #ffeff1;
-}
-
-.feedback {
-  min-height: 26px;
-  font-weight: 700;
-  margin: 14px 0 0;
-}
-
-.feedback.ok {
-  color: var(--verde-ok);
-}
-
-.feedback.no {
-  color: var(--rojo-error);
-}
-
-.actions {
-  margin-top: 18px;
+.controls {
+  margin-top: 16px;
   display: flex;
-  gap: 8px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .btn {
-  border: none;
+  border: 0;
   border-radius: 10px;
   padding: 11px 16px;
   font-weight: 700;
-  background: var(--celeste-oscuro);
   color: white;
+  background: var(--accent);
   cursor: pointer;
 }
 
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .btn-secondary {
-  background: var(--azul-tinta);
+  background: #243a6b;
 }
 
-.footer {
-  text-align: center;
-  font-weight: 700;
-  margin-top: 12px;
+.hint {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.92rem;
 }
 
-@media (max-width: 600px) {
-  .card {
-    padding: 18px;
-  }
+h3 {
+  margin-top: 0;
+}
 
-  .status-row {
-    flex-direction: column;
-  }
+#schedule-list {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
 }

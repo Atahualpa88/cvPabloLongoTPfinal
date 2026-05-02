@@ -3,39 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Juego Patrio - 25 de Mayo</title>
+  <title>Radio Nébula 24/7</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="app">
     <header class="hero">
-      <p class="badge">🇦🇷 Acto del 25 de Mayo</p>
-      <h1>Desafío Patrio</h1>
-      <p class="subtitle">Respondé preguntas sobre la Revolución de Mayo y sumá puntos por cada respuesta correcta.</p>
+      <p class="badge">🔴 EN VIVO · 24 HS</p>
+      <h1>Radio Nébula</h1>
+      <p class="subtitle">Música nonstop con Auto DJ inteligente, programación automática y energía para todo el día.</p>
     </header>
 
-    <section class="card" id="quiz-card">
-      <div class="status-row">
-        <p id="progress">Pregunta 1 de 10</p>
-        <p id="score">Puntaje: 0</p>
+    <section class="player card">
+      <div class="live-row">
+        <p class="live">Estado: <strong id="live-status">Transmitiendo</strong></p>
+        <p class="listeners">Oyentes ahora: <strong id="listeners">128</strong></p>
       </div>
 
-      <h2 id="question">Cargando pregunta...</h2>
-      <div id="answers" class="answers"></div>
-      <p id="feedback" class="feedback" aria-live="polite"></p>
+      <h2 id="track-title">Auto DJ: Synthwave Nights</h2>
+      <p id="track-meta" class="track-meta">Género: Electro Pop · Duración: 03:42</p>
 
-      <div class="actions">
-        <button id="next-btn" class="btn" disabled>Siguiente</button>
-        <button id="restart-btn" class="btn btn-secondary" hidden>Volver a jugar</button>
+      <div class="progress-wrap" aria-hidden="true">
+        <div id="progress-bar" class="progress-bar"></div>
       </div>
+
+      <div class="controls">
+        <button id="play-btn" class="btn" type="button">Pausar stream</button>
+        <button id="next-btn" class="btn btn-secondary" type="button">Siguiente mix</button>
+      </div>
+
+      <p class="hint">Tip: conectá este player al stream real (Icecast/Shoutcast/HLS) cambiando la fuente del Auto DJ.</p>
     </section>
 
-    <footer class="footer">
-      <p>¡Viva la Patria! 💙☀️🤍</p>
-    </footer>
+    <section class="schedule card">
+      <h3>Programación automática</h3>
+      <ul id="schedule-list"></ul>
+    </section>
   </main>
 
   <script src="funciones.js"></script>
