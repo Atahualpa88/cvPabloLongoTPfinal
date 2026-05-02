@@ -1,146 +1,89 @@
-const preguntas = [
-  {
-    pregunta: '¿En qué fecha se formó la Primera Junta en Buenos Aires?',
-    opciones: ['25 de mayo de 1810', '9 de julio de 1816', '20 de junio de 1820', '17 de agosto de 1850'],
-    correcta: 0,
-  },
-  {
-    pregunta: '¿Quién fue elegido presidente de la Primera Junta?',
-    opciones: ['Manuel Belgrano', 'Cornelio Saavedra', 'Mariano Moreno', 'Juan José Castelli'],
-    correcta: 1,
-  },
-  {
-    pregunta: '¿Qué institución de gobierno reemplazó la Primera Junta?',
-    opciones: ['El Directorio', 'El Triunvirato', 'La Asamblea del Año XIII', 'El Cabildo Abierto'],
-    correcta: 1,
-  },
-  {
-    pregunta: '¿Qué edificio fue escenario principal de los hechos de Mayo?',
-    opciones: ['Casa Rosada', 'Cabildo de Buenos Aires', 'Congreso de Tucumán', 'Fuerte de Buenos Aires'],
-    correcta: 1,
-  },
-  {
-    pregunta: '¿Qué se debatió en el Cabildo Abierto del 22 de mayo de 1810?',
-    opciones: ['La redacción de la Constitución', 'La continuidad del virrey Cisneros', 'La independencia de Brasil', 'La bandera nacional'],
-    correcta: 1,
-  },
-  {
-    pregunta: '¿Qué rol tuvo Mariano Moreno en la Primera Junta?',
-    opciones: ['Secretario', 'Tesorero', 'Presidente', 'General del Ejército'],
-    correcta: 0,
-  },
-  {
-    pregunta: '¿Qué colores representan la escarapela argentina tradicional?',
-    opciones: ['Rojo y blanco', 'Celeste y blanco', 'Azul y rojo', 'Verde y blanco'],
-    correcta: 1,
-  },
-  {
-    pregunta: '¿Qué acontecimiento internacional influyó en la Revolución de Mayo?',
-    opciones: ['La Revolución Industrial', 'La invasión napoleónica a España', 'La caída del Imperio romano', 'La guerra de Crimea'],
-    correcta: 1,
-  },
-  {
-    pregunta: '¿Cómo se llamaba el virrey destituido en mayo de 1810?',
-    opciones: ['Baltasar Hidalgo de Cisneros', 'Santiago de Liniers', 'Juan Manuel de Rosas', 'José de San Martín'],
-    correcta: 0,
-  },
-  {
-    pregunta: '¿Qué frase representa mejor el espíritu del 25 de Mayo?',
-    opciones: ['Orden y progreso', 'Libertad y autogobierno', 'Paz y administración', 'Comercio y navegación'],
-    correcta: 1,
-  },
+const tracks = [
+  { title: 'Auto DJ: Synthwave Nights', genre: 'Electro Pop', duration: 222 },
+  { title: 'Auto DJ: Indie Morning Drive', genre: 'Indie Rock', duration: 198 },
+  { title: 'Auto DJ: Urban Sunset Session', genre: 'Hip Hop / R&B', duration: 210 },
+  { title: 'Auto DJ: Deep House Pulse', genre: 'House', duration: 246 },
+  { title: 'Auto DJ: Chill Focus Flow', genre: 'Lo-fi', duration: 234 },
 ];
 
-const questionEl = document.querySelector('#question');
-const answersEl = document.querySelector('#answers');
-const progressEl = document.querySelector('#progress');
-const scoreEl = document.querySelector('#score');
-const feedbackEl = document.querySelector('#feedback');
+const schedule = [
+  '00:00 - 06:00 · Modo madrugada (Chill + Downtempo)',
+  '06:00 - 10:00 · Amanecer activo (Pop & Hits)',
+  '10:00 - 14:00 · Auto DJ Work Mix',
+  '14:00 - 18:00 · Tarde urbana (Latin + Urban)',
+  '18:00 - 22:00 · Prime time (Top tracks)',
+  '22:00 - 00:00 · Night vibes (Deep & Chill)',
+];
+
+const trackTitle = document.querySelector('#track-title');
+const trackMeta = document.querySelector('#track-meta');
+const progressBar = document.querySelector('#progress-bar');
+const playBtn = document.querySelector('#play-btn');
 const nextBtn = document.querySelector('#next-btn');
-const restartBtn = document.querySelector('#restart-btn');
+const listenersEl = document.querySelector('#listeners');
+const statusEl = document.querySelector('#live-status');
+const scheduleList = document.querySelector('#schedule-list');
 
-let indiceActual = 0;
-let puntaje = 0;
-let respondida = false;
+let currentTrackIndex = 0;
+let elapsed = 0;
+let isPlaying = true;
+let timer;
 
-function renderPregunta() {
-  const actual = preguntas[indiceActual];
-  progressEl.textContent = `Pregunta ${indiceActual + 1} de ${preguntas.length}`;
-  scoreEl.textContent = `Puntaje: ${puntaje}`;
-  questionEl.textContent = actual.pregunta;
-  feedbackEl.textContent = '';
-  feedbackEl.className = 'feedback';
-  nextBtn.disabled = true;
-  answersEl.innerHTML = '';
-  respondida = false;
-
-  actual.opciones.forEach((texto, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'answer-btn';
-    btn.type = 'button';
-    btn.textContent = texto;
-    btn.addEventListener('click', () => responder(i, btn));
-    answersEl.appendChild(btn);
-  });
+function formatTime(seconds) {
+  const min = Math.floor(seconds / 60).toString().padStart(2, '0');
+  const sec = (seconds % 60).toString().padStart(2, '0');
+  return `${min}:${sec}`;
 }
 
-function responder(indiceElegido, botonElegido) {
-  if (respondida) {
+function renderTrack() {
+  const track = tracks[currentTrackIndex];
+  trackTitle.textContent = track.title;
+  trackMeta.textContent = `Género: ${track.genre} · Duración: ${formatTime(track.duration)}`;
+}
+
+function nextTrack() {
+  currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+  elapsed = 0;
+  renderTrack();
+}
+
+function tick() {
+  if (!isPlaying) {
     return;
   }
 
-  respondida = true;
-  const actual = preguntas[indiceActual];
-  const botones = document.querySelectorAll('.answer-btn');
+  const track = tracks[currentTrackIndex];
+  elapsed += 1;
+  const progress = Math.min((elapsed / track.duration) * 100, 100);
+  progressBar.style.width = `${progress}%`;
 
-  botones.forEach((btn, i) => {
-    btn.disabled = true;
-    if (i === actual.correcta) {
-      btn.classList.add('correct');
-    }
+  if (elapsed >= track.duration) {
+    nextTrack();
+  }
+
+  const variation = Math.floor(Math.random() * 5) - 2;
+  const current = Number(listenersEl.textContent);
+  listenersEl.textContent = Math.max(40, current + variation);
+}
+
+function togglePlayback() {
+  isPlaying = !isPlaying;
+  playBtn.textContent = isPlaying ? 'Pausar stream' : 'Reanudar stream';
+  statusEl.textContent = isPlaying ? 'Transmitiendo' : 'En pausa';
+}
+
+function renderSchedule() {
+  scheduleList.innerHTML = '';
+  schedule.forEach((item) => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    scheduleList.appendChild(li);
   });
-
-  if (indiceElegido === actual.correcta) {
-    puntaje += 10;
-    botonElegido.classList.add('correct');
-    feedbackEl.textContent = '¡Correcto! +10 puntos';
-    feedbackEl.classList.add('ok');
-  } else {
-    botonElegido.classList.add('wrong');
-    feedbackEl.textContent = 'Respuesta incorrecta. ¡La próxima sale!';
-    feedbackEl.classList.add('no');
-  }
-
-  scoreEl.textContent = `Puntaje: ${puntaje}`;
-  nextBtn.disabled = false;
 }
 
-function mostrarResultadoFinal() {
-  progressEl.textContent = `Juego terminado · ${preguntas.length} preguntas`;
-  questionEl.textContent = `Obtuviste ${puntaje} puntos de ${preguntas.length * 10}.`;
-  feedbackEl.textContent = puntaje >= 70 ? '¡Excelente espíritu patrio! 🇦🇷' : '¡Buen intento! Podés volver a jugar y superarte.';
-  feedbackEl.className = `feedback ${puntaje >= 70 ? 'ok' : 'no'}`;
-  answersEl.innerHTML = '';
-  nextBtn.hidden = true;
-  restartBtn.hidden = false;
-}
+playBtn.addEventListener('click', togglePlayback);
+nextBtn.addEventListener('click', nextTrack);
 
-nextBtn.addEventListener('click', () => {
-  indiceActual += 1;
-  if (indiceActual >= preguntas.length) {
-    mostrarResultadoFinal();
-    return;
-  }
-
-  renderPregunta();
-});
-
-restartBtn.addEventListener('click', () => {
-  indiceActual = 0;
-  puntaje = 0;
-  nextBtn.hidden = false;
-  restartBtn.hidden = true;
-  renderPregunta();
-});
-
-renderPregunta();
+renderTrack();
+renderSchedule();
+timer = setInterval(tick, 1000);
